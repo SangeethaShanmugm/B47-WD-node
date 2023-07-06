@@ -188,6 +188,7 @@ db.movies.find({}, { _id: 0, name: 1, rating: 1 }).pretty();
 //asc = 1
 db.movies.find({}).sort({ rating: 1 }).pretty();
 
+db.movies.find({}).sort({ rating: 1 }).pretty();
 //desc = -1
 db.movies.find({}).sort({ rating: -1 }).pretty();
 
@@ -197,7 +198,59 @@ db.movies.find({}).sort({ rating: -1 }).limit(2).pretty();
 //skip first 2
 db.movies.find({}).sort({ rating: -1 }).skip(2).pretty();
 
+//Operators
 //1. rating < 8.8
+db.movies.find({ rating: { $lt: 8.8 } }).pretty();
+
 //2. rating >= 8
+
+db.movies.find({ rating: { $gte: 8 } }).pretty();
+
+//combine operators + projection
 //3. rating > 8  and exclude _id, include name, summary
+
+db.movies
+  .find({ rating: { $gt: 8 } }, { _id: 0, name: 1, rating: 1, summary: 1 })
+  .pretty();
+
+//combine operators + projection + sorting
 //4. rating >= 8.8  and exclude _id, include name,rating, and sort by rating in desc order
+db.movies
+  .find({ rating: { $gte: 8.8 } }, { _id: 0, name: 1, rating: 1 })
+  .sort({ rating: -1 })
+  .pretty();
+
+db.movies.find({}, { _id: 0, name: 1, rating: 1 }).sort({ name: 1 }).pretty();
+
+//aggregate
+
+db.orders.insertMany([
+  { _id: 0, productName: "Steel Beam", status: "new", quantity: 10 },
+  { _id: 1, productName: "Steel Beam", status: "urgent", quantity: 20 },
+  { _id: 2, productName: "Steel Beam", status: "urgent", quantity: 30 },
+  { _id: 3, productName: "Iron Rod", status: "new", quantity: 15 },
+  { _id: 4, productName: "Iron Rod", status: "urgent", quantity: 50 },
+  { _id: 5, productName: "Iron Rod", status: "urgent", quantity: 10 },
+]);
+
+db.orders.find().pretty();
+
+//stage 1 - Select sum(quantity) from orders where status="urgent"
+
+db.orders.aggregate([{ $match: { status: "urgent" } }]);
+
+//stage 2 - group by productName
+//$match,$group, $sum,  - aggregate methods /operator
+db.orders.aggregate([
+  { $match: { status: "urgent" } },
+  {
+    $group: { _id: "$productName", totalUrgentQuantity: { $sum: "$quantity" } },
+  },
+]);
+
+//TASK
+// update the language="English" for all document in movies collection
+//update rating for "name: "RRR" from 8.8 to 9
+//update all movies rating from 8 to different rating
+//update the movie name from "Baahubali" to "Baahubali 2"
+// delete all movies with rating > 8.8

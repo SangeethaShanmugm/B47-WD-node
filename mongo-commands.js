@@ -250,7 +250,35 @@ db.orders.aggregate([
 
 //TASK
 // update the language="English" for all document in movies collection
+
+db.movies.updateMany({}, { $set: { language: "English" } });
+
+db.movies.find().pretty();
+
 //update rating for "name: "RRR" from 8.8 to 9
+
+db.movies.updateOne({ name: "RRR" }, { $set: { rating: 9 } });
+
+db.movies.findOne({ name: "RRR" });
+
 //update all movies rating from 8 to different rating
+
+db.movies.find({ rating: 8 }).pretty();
+
+db.movies.updateOne({ name: "The Avengers" }, { $set: { rating: 9 } });
+
+db.movies.updateOne({ name: "Baahubali" }, { $set: { rating: 9.5 } });
+
 //update the movie name from "Baahubali" to "Baahubali 2"
+
+db.movies.updateOne({ name: "Baahubali" }, { $set: { name: "Baahubali 2" } });
+
+db.movies.findOne({ name: "Baahubali" });
+
 // delete all movies with rating > 8.8
+
+db.movies.find({ rating: { $gt: 8.8 } }, { name: 1, rating: 1 });
+
+db.movies.deleteOne({ rating: { $gt: 8.8 } });
+
+db.movies.deleteMany({ rating: { $gt: 8.8 } });

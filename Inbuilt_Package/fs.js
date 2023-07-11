@@ -52,10 +52,32 @@ const quote2 = "Live more, worry less 🥳🥳🥳";
 //   console.log("Completed writing nice.txt");
 // });
 
-fs.unlink("./toRemove.txt", (err) => {
-  console.log("Deleted successfully");
+// fs.unlink("./toRemove.txt", (err) => {
+//   console.log("Deleted successfully");
+// });
+
+// fs.readdir("./backup", (err, files) => {
+//   console.log("All file names", files);
+// });
+
+fs.readdir("./backup", (err, data) => {
+  data.forEach((fileName) => {
+    fs.unlink(`./backup/${fileName}`, (err) => {
+      console.log("Deleted successfully", fileName);
+    });
+  });
 });
 
-fs.readdir("./backup", (err, files) => {
-  console.log("All file names", files);
-});
+// writeFile => CallStack => WebApi(whoever finishes writing first) =>CallBack Q => CallStack
+
+// fs.writeFile, fs.readFile, fs.appendFile - async
+// fs.writeFileSync, fs.readFileSync, fs.appendFileSync - sync
+
+//Sync
+
+const [, , noOfFiles] = process.argv;
+console.log(noOfFiles);
+for (let i = 1; i <= noOfFiles; i++) {
+  fs.writeFileSync(`./backup/note-${i}.txt`, quote2);
+  console.log("Completed writing", i);
+}

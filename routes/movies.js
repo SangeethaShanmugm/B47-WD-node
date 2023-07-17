@@ -6,6 +6,7 @@ import {
   addMovies,
   updateMovies,
 } from "../helper.js";
+import { auth } from "../middleware/auth.js";
 const router = express.Router();
 
 //REST Api endpoints
@@ -32,7 +33,7 @@ router.get("/:id", async (req, res) => {
     : res.status(404).send({ message: "No movies found" });
 });
 
-//delete book by id
+//delete movies by id
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const movie = await deleteMoviesByID(id);

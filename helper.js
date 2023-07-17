@@ -26,8 +26,10 @@ export async function updateMovies(id, updateMovie) {
 }
 
 export async function genPassword(password) {
+  //generating random string
   const salt = await bcrypt.genSalt(10); //bcrypt.genSalt(no. of rounds)
   console.log(salt);
+  //salt + password => hashedPassword
   const hashedPassword = await bcrypt.hash(password, salt);
   console.log(hashedPassword);
   return hashedPassword;
